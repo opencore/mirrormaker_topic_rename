@@ -41,6 +41,6 @@ public class RenameTopicHandler implements MirrorMaker.MirrorMakerMessageHandler
       targetTopic = record.topic();
     }
     // topic is set correctly at this point, return a list containing the new record with updated parameters
-    return Collections.singletonList(new ProducerRecord<byte[], byte[]>(targetTopic, record.key(), record.value()));
+    return Collections.singletonList(new ProducerRecord<byte[], byte[]>(targetTopic, null, record.timestamp(), record.key(), record.value()));
   }
 }
