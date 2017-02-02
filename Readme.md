@@ -21,7 +21,7 @@ Having done this, you can start MirrorMaker with your usual configuration and ju
 
 The two parameters you will need to add are:
 
-**message.handler**:
+**--message.handler**:
 
 This takes the classname of the handler class to use, if you have not changed anything in the code the value from the example below should work.
 
