@@ -32,6 +32,6 @@ This is used to configure which topics to change, it should have the following f
 It is a semicolon separated list of string pairs, which are itself separated by a comma. In the above example any message from the topic *sourcetopic1* would be mirrored to *targettopic1* (and the same with *2*) on the target cluster. Any other topics that MirrorMaker is following will not be changed and written to a topic of the same name on the target cluster.
 
 ``` bash
-kafka-mirror-maker --consumer.config consumer.properties --producer.config producer.properties --whitelist test_.* --message.handler com.opencore.RenameTopicHandler --message.handler.args test_source,test_target
+kafka-mirror-maker --consumer.config consumer.properties --producer.config producer.properties --whitelist test_.* --message.handler com.opencore.RenameTopicHandler --message.handler.args `test_source,test_target;test_source2,test_target2`
 ```
 
