@@ -6,6 +6,7 @@ import java.util.List;
 import kafka.consumer.BaseConsumerRecord;
 import kafka.tools.MirrorMaker;
 import org.apache.kafka.clients.producer.ProducerRecord;
+import org.apache.kafka.common.record.Record;
 
 /**
  * An example implementation of MirrorMakerMessageHandler that allows to define a list of topics
@@ -40,7 +41,9 @@ public class RenameTopicHandler implements MirrorMaker.MirrorMakerMessageHandler
       // no substitution necessary, return the record with unchanged properties
       targetTopic = record.topic();
     }
+
+    Long timestamp = record.timestamp() == Record.NO_TIMESTAMP ? null : record.timestamp();
     // topic is set correctly at this point, return a list containing the new record with updated parameters
-    return Collections.singletonList(new ProducerRecord<byte[], byte[]>(targetTopic, null, record.timestamp(), record.key(), record.value()));
+    return Collections.singletonList(new ProducerRecord<byte[], byte[]>(targetTopic, null, timestamp, record.key(), record.value()));
   }
 }
