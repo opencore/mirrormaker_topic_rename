@@ -3,10 +3,11 @@ package com.opencore;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
+
 import kafka.consumer.BaseConsumerRecord;
 import kafka.tools.MirrorMaker;
 import org.apache.kafka.clients.producer.ProducerRecord;
-import org.apache.kafka.common.record.Record;
+import org.apache.kafka.clients.consumer.ConsumerRecord;
 
 /**
  * An example implementation of MirrorMakerMessageHandler that allows to define a list of topics
@@ -42,7 +43,7 @@ public class RenameTopicHandler implements MirrorMaker.MirrorMakerMessageHandler
       targetTopic = record.topic();
     }
 
-    Long timestamp = record.timestamp() == Record.NO_TIMESTAMP ? null : record.timestamp();
+    Long timestamp = record.timestamp() == ConsumerRecord.NO_TIMESTAMP ? null : record.timestamp();
     // topic is set correctly at this point, return a list containing the new record with updated parameters
     return Collections.singletonList(new ProducerRecord<byte[], byte[]>(targetTopic, null, timestamp, record.key(), record.value()));
   }
