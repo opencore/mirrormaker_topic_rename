@@ -5,6 +5,7 @@ import java.util.List;
 import kafka.consumer.BaseConsumerRecord;
 import kafka.tools.MirrorMaker;
 import org.apache.kafka.clients.producer.ProducerRecord;
+import org.apache.kafka.common.record.RecordBatch;
 
 /**
  * An implementation of MirrorMakerMessageHandler that can be used when a topic should be recreated as close
@@ -17,6 +18,7 @@ import org.apache.kafka.clients.producer.ProducerRecord;
  */
 public class ExactMessageHandler implements MirrorMaker.MirrorMakerMessageHandler {
   public List<ProducerRecord<byte[], byte[]>> handle(BaseConsumerRecord record) {
-    return Collections.singletonList(new ProducerRecord<byte[], byte[]>(record.topic(), record.partition(), record.timestamp(), record.key(), record.value(), record.headers()));
+    Long timestamp = record.timestamp() == RecordBatch.NO_TIMESTAMP ? null : record.timestamp();
+    return Collections.singletonList(new ProducerRecord<byte[], byte[]>(record.topic(), record.partition(), timestamp, record.key(), record.value(), record.headers()));
   }
 }
