@@ -5,12 +5,10 @@ This repository shows how this can easily be achieved by implementing a custom M
 
 This work is based on [code](https://github.com/gwenshap/kafka-examples/blob/master/MirrorMakerHandler/README.md) from Gwen Shapiras example repository, so most of the credit goes to her.
 
-Setup
-=====
+## Setup
 To use this code with MirrorMaker simply build the jar from this repository and put it on the machine that you will be running MirrorMaker from.
 
-Usage
-=====
+## Usage
 Before starting MirrorMaker you need to include the jar file in your classpath:
 
 ``` bash
@@ -18,6 +16,14 @@ export CLASSPATH=/home/sliebau/mmchangetopic-1.0-SNAPSHOT.jar
 ```
 
 Having done this, you can start MirrorMaker with your usual configuration and just add the handler classname as well as a configuration string to tell the handler, which topics to rename and which to leave as is.
+
+
+## Implemented Handlers
+This repository contains two MessageHandler implementations, which are explained below.
+
+### RenameTopicMessageHandler
+This handler allows changing the name of the topic in the target cluster that data is written to.
+It needs to be configured via parameters passed to the command line of Mirror Maker.
 
 The two parameters you will need to add are:
 
@@ -34,4 +40,14 @@ It is a semicolon separated list of string pairs, which are itself separated by 
 ``` bash
 kafka-mirror-maker --consumer.config consumer.properties --producer.config producer.properties --whitelist test_.* --message.handler com.opencore.RenameTopicHandler --message.handler.args `test_source,test_target;test_source2,test_target2`
 ```
+
+
+### ExactMessageHandler
+This message handler tries to create as close a copy of the original message during mirroring as possible.
+The most notable change over the default message handler is, that partitioning based on the key is bypassed completely.
+Instead the partititon number from the original message is taken and used on the target topic as well, thus ensuring that the mirror topic has the exact same partitioning as the source topic.
+
+This will create Exceptions, if the target topic has a different partition count than the source topic, as MirrorMaker will either try to write to non-existing partitions (target < source) or leave partitions empty (target > source).
+
+This message handler takes no configuration.
 
