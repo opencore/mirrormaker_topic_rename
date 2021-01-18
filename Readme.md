@@ -56,11 +56,11 @@ This message handler takes these optional args:
 This is used to configure topics to be exactly copied. Suppose you need to mirror multiple topics but only some of them have 
 the same partition count in source and target.
 
-It is a comma separated list of strings. In the bellow example any message from the topic *test_exact* would be mirrored with the same partitioning number in messages (and the same with *2*) on the target cluster. Any other topics that MirrorMaker is following will not be changed and written to a topic bypassing source messages partitioning.
+It is a comma separated list of strings. In the bellow example any message from the topic *test_exact* would be mirrored with the same partitioning number in messages (and the same with *2*) on the target cluster. Any other topics (for example *test_exact_3*) that MirrorMaker is following will not be changed and written to a topic bypassing source messages partitioning.
 
 If the parameter is an explicit empty list all topics will be mirrored bypassing source message partitioning.
 
-If the parameter is not provided at all than all topics will be copied with the same partitioning number in messages.
+If the parameter is not provided all topics will be copied with the same partitioning number in messages.
 
 ``` bash
 kafka-mirror-maker --consumer.config consumer.properties --producer.config producer.properties --whitelist test_.* --message.handler com.opencore.ExactMessageHandler --message.handler.args 'test_exact,test_exact2'
