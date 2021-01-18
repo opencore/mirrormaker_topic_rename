@@ -35,10 +35,10 @@ This takes the classname of the handler class to use, if you have not changed an
 
 This is used to configure which topics to change, it should have the following format: sourcetopic1,targettopic1;sourcetopic2,targettopic2;...
 
-It is a semicolon separated list of string pairs, which are itself separated by a comma. In the above example any message from the topic *sourcetopic1* would be mirrored to *targettopic1* (and the same with *2*) on the target cluster. Any other topics that MirrorMaker is following will not be changed and written to a topic of the same name on the target cluster.
+It is a semicolon separated list of string pairs, which are itself separated by a comma. In the bellow example any message from the topic *test_source* would be mirrored to *test_target* (and the same with *2*) on the target cluster. Any other topics that MirrorMaker is following will not be changed and written to a topic of the same name on the target cluster.
 
 ``` bash
-kafka-mirror-maker --consumer.config consumer.properties --producer.config producer.properties --whitelist test_.* --message.handler com.opencore.RenameTopicHandler --message.handler.args `test_source,test_target;test_source2,test_target2`
+kafka-mirror-maker --consumer.config consumer.properties --producer.config producer.properties --whitelist test_.* --message.handler com.opencore.RenameTopicHandler --message.handler.args 'test_source,test_target;test_source2,test_target2'
 ```
 
 
@@ -49,5 +49,19 @@ Instead the partititon number from the original message is taken and used on the
 
 This will create Exceptions, if the target topic has a different partition count than the source topic, as MirrorMaker will either try to write to non-existing partitions (target < source) or leave partitions empty (target > source).
 
-This message handler takes no configuration.
+This message handler takes these optional args:
 
+**--message.handler.args**: 
+
+This is used to configure topics to be exactly copied. Suppose you need to mirror multiple topics but only some of them have 
+the same partition count in source and target.
+
+It is a comma separated list of strings. In the bellow example any message from the topic *test_exact* would be mirrored with the same partitioning number in messages (and the same with *2*) on the target cluster. Any other topics (for example *test_exact_3*) that MirrorMaker is following will not be changed and written to a topic bypassing source messages partitioning.
+
+If the parameter is an explicit empty list all topics will be mirrored bypassing source message partitioning.
+
+If the parameter is not provided all topics will be copied with the same partitioning number in messages.
+
+``` bash
+kafka-mirror-maker --consumer.config consumer.properties --producer.config producer.properties --whitelist test_.* --message.handler com.opencore.ExactMessageHandler --message.handler.args 'test_exact,test_exact2'
+```
